@@ -7,6 +7,8 @@ The features are:
 - loading pools from the render farm
 - submit the job to the render farm including priority and packet size
 
+![Screenshot](SmedgeSubmitterScreenshot.png)
+
 
 ## Installation
 The script only works in combination with Smedge. So make sure Smedge is installed on your System.
