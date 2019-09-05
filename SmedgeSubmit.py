@@ -36,7 +36,7 @@ bl_info = {
     "description": "Render your Blender scenes distributed with the Smedge render manger",
     "author": "Johannes Wuensch",
     "version": (1, 0, 0),
-    "blender": (2, 79, 0),
+    "blender": (2, 80, 0),
     "location": "Properties > Render> SmedgeSubmitter",
     "warning": "",
     "wiki_url": "",
@@ -73,7 +73,7 @@ if platform.system() == "Darwin":
 
 # -- Helper functions/classes
 
-class SmedgeInfosOperator(bpy.types.Operator):
+class SMEDGE_INFO_0perator(bpy.types.Operator):
 	bl_idname	= "smedge.infos"
 	bl_label	= "SMEDGE INFO"
 
@@ -89,15 +89,15 @@ class SmedgeInfosOperator(bpy.types.Operator):
 		return context.window_manager.invoke_props_dialog(self, width = calculatedWidth, height = 450)
 
 	def draw(self, context):
-		row = self.layout.split(1.0)
-		row.label(self.Message)
+		row = self.layout.split(factor = 1.0)
+		row.label(text = self.Message)
 
 		# Add an additional hint if an error occurs
 		if "Error" in self.Message:
 			row = self.layout.split(1.0)
-			row.label("Please make sure that the path at the top of the \"SmedgeSubmitter.py\" file points to your Smedge installation!")
+			row.label(text = "Please make sure that the path at the top of the \"SmedgeSubmitter.py\" file points to your Smedge installation!")
 			row = self.layout.split(1.0)
-			row.operator("smedge.openfolder", text="edit SmedgeSubmitter.py")
+			row.operator("smedge.openfolder", "edit SmedgeSubmitter.py")
 	
 	def execute(self, context):
 		return {"FINISHED"}
@@ -112,7 +112,7 @@ def SmedgeInfo(msg):
 
 
 
-class SmedgeOpenScriptContainingFolderOperator(bpy.types.Operator):
+class SMEDGE_OPEN_SCRIPT_CONTAINING_FOLDER_operator(bpy.types.Operator):
 	"""Open the Folder in which this script File is located"""
 	bl_idname = "smedge.openfolder"
 	bl_label = "Open Script Folder"
@@ -161,7 +161,7 @@ class SmedgeOpenScriptContainingFolderOperator(bpy.types.Operator):
 
 
 
-class SmedgeSubmitOperator(bpy.types.Operator):
+class SMEDGE_SUBMIT_operator(bpy.types.Operator):
 	"""Submits a new job to Smedge"""
 	bl_idname	= "smedge.submit"
 	bl_label	= "Submit job"
@@ -175,7 +175,7 @@ class SmedgeSubmitOperator(bpy.types.Operator):
 		scn = bpy.context.scene
 
 		if str( os.path.normpath(bpy.data.filepath)) == "." :
-			SmedgeInfo("Please save your file first!")
+			SmedgeInfo(text = "Please save your file first!")
 		else:
 
 			#  Build the command line
@@ -221,7 +221,7 @@ class SmedgeSubmitOperator(bpy.types.Operator):
 
 
 
-class SmedgeLoadPoolsOperator(bpy.types.Operator):
+class SMEDGE_LOAD_POOLS_operator(bpy.types.Operator):
 	"""Load all available pools from the render farm"""
 	bl_idname	= "smedge.load_pools"
 	bl_label	= "load pools"
@@ -282,7 +282,7 @@ class SmedgeLoadPoolsOperator(bpy.types.Operator):
 
 
 
-class SmedgeSubmitPanel(bpy.types.Panel):
+class SMEDGE_SUBMIT_panel(bpy.types.Panel):
 	bl_idname		= "smedge_panel"
 	bl_label		= "Smedge Submitter"
 	bl_space_type   = 'PROPERTIES'
@@ -311,13 +311,13 @@ class SmedgeSubmitPanel(bpy.types.Panel):
 		layout	= self.layout
 
 		# job summary
-		layout.label("Render Settings Summary:")
+		layout.label(text = "Render Settings Summary:")
 		
 		box = layout.box()
 
-		box.label("Start:  " + str(scn.frame_start))
-		box.label("End:  " + str(scn.frame_end))
-		box.label("Resolution:  " + str(width) + " x " + str(height) + "     " + str(ResolutionPercentage) + "%")
+		box.label(text = "Start:  " + str(scn.frame_start))
+		box.label(text = "End:  " + str(scn.frame_end))
+		box.label(text = "Resolution:  " + str(width) + " x " + str(height) + "     " + str(ResolutionPercentage) + "%")
 
 		if scn.render.engine == "CYCLES":
 			if scn.cycles.progressive == "PATH":
@@ -326,11 +326,11 @@ class SmedgeSubmitPanel(bpy.types.Panel):
 				engineInfo = scn.render.engine + "     Branched Path Tracing"
 		if scn.render.engine == "BLENDER_RENDER":
 			engineInfo = scn.render.engine 
-		box.label(engineInfo)
+		box.label(text = engineInfo)
 
-		box.label("---- Active Render Layers ----")
+		box.label(text = "---- Active Render Layers ----")
 
-		for rl in scn.render.layers:
+		for rl in scn.view_layers:
 			renderLayerInfo = ""
 			if rl.use:
 				if scn.render.engine == "CYCLES":
@@ -347,32 +347,32 @@ class SmedgeSubmitPanel(bpy.types.Panel):
 				else:
 					renderLayerInfo = rl.name
 			if renderLayerInfo != "":
-				box.label(renderLayerInfo)
+				box.label(text = renderLayerInfo)
 
-		box.label("-------------------------------")
+		box.label(text = "-------------------------------")
 
-		box.label("Image Type:  " + fileFormat + "     " + color_mode + "     " + color_depth +" bit")
-		box.label("Render Output:  " +  os.path.dirname(renderOut) + "\\" + os.path.basename(renderOut)) 
+		box.label(text = "Image Type:  " + fileFormat + "     " + color_mode + "     " + color_depth +" bit")
+		box.label(text = "Render Output:  " +  os.path.dirname(renderOut) + "\\" + os.path.basename(renderOut)) 
 
 		# Smedge Settings
-		layout.label("")
-		layout.label("Smedge Job Settings:")
+		layout.label(text = "")
+		layout.label(text = "Smedge Job Settings:")
 
 		box = layout.box()
 
 		col = box.column()
 		col.scale_y = 0.5
-		layout.label("")
+		layout.label(text = "")
 
 		col = box.column()
 		row = col.row()
-		row.prop(scn, "SmedgePriority")
-		row.prop(scn, "SmedgePacketSize")
+		row.prop(scn, property =  "SmedgePriority")
+		row.prop(scn, property =  "SmedgePacketSize")
 
 		if platform.system() != "Linux": # only show pool options for Windows and MacOS as Linux doesn't work
 			col = box.column()
 			row = col.row()
-			row.prop(scn, "SmedgePools")
+			row.prop(scn,property =  "SmedgePools")
 			row.operator("smedge.load_pools", text="load pools")
 
 		col = box.column()
@@ -389,14 +389,13 @@ class SmedgeSubmitPanel(bpy.types.Panel):
 	
 		
 		
+classes = (SMEDGE_SUBMIT_operator, SMEDGE_LOAD_POOLS_operator, SMEDGE_SUBMIT_panel, SMEDGE_INFO_0perator, SMEDGE_OPEN_SCRIPT_CONTAINING_FOLDER_operator)
 
 def register():
-	bpy.utils.register_class(SmedgeSubmitOperator)
-	bpy.utils.register_class(SmedgeLoadPoolsOperator)
-	bpy.utils.register_class(SmedgeSubmitPanel)
-	bpy.utils.register_class(SmedgeInfosOperator)
-	bpy.utils.register_class(SmedgeOpenScriptContainingFolderOperator)
-	
+	from bpy.utils import register_class
+	for cls in classes:
+		register_class(cls)
+
 
 	# define Scene Properties for Smedge
 	bpy.types.Scene.SmedgePriority = bpy.props.IntProperty( name = "Job Priority", description = "Priority of the job on the Smedge render farm. Higher priority jobs will be rendered first.", default = 10, min = 0, max = 100)
@@ -405,11 +404,9 @@ def register():
 	bpy.types.Scene.SmedgeJobStartPaused = bpy.props.BoolProperty(name = "Start job paused", description = "job will be sent to farm in paused mode. You have to manually activate it on the farm later to render it.", default = False)
 
 def unregister():
-	bpy.utils.unregister_class(SmedgeSubmitOperator)
-	bpy.utils.unregister_class(SmedgeLoadPoolsOperator)
-	bpy.utils.unregister_class(SmedgeSubmitPanel)
-	bpy.utils.unregister_class(SmedgeInfosOperator)
-	bpy.utils.unregister_class(SmedgeOpenScriptContainingFolderOperator)
+	from bpy.utils import unregister_class
+	for cls in reversed(classes):
+		unregister_class(cls)
 
 if __name__ == "__main__":
 	register()
